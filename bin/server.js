@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const fs = require('fs');
 const yargs = require('yargs');
 const path = require('path');
@@ -25,20 +24,17 @@ const writeTasks = (tasks) => {
   }
 };
 
-
 let tasks = readTasks();
 let idCounter = tasks.length ? tasks[tasks.length - 1].id + 1 : 1;
 
-// Comando para agregar una nueva tarea
 yargs.command({
-  command: 'add',
+  command: 'add <task>',
   describe: 'Add a new task',
-  builder: {
-    task: {
+  builder: (yargs) => {
+    return yargs.positional('task', {
       describe: 'Task to be added',
-      demandOption: true,
       type: 'string',
-    },
+    });
   },
   handler(argv) {
     tasks.push({ id: idCounter++, task: argv.task, status: 'todo' });
@@ -47,7 +43,6 @@ yargs.command({
   },
 });
 
-// Comando para actualizar una tarea
 yargs.command({
   command: 'update',
   describe: 'Update a task',
@@ -75,7 +70,6 @@ yargs.command({
   },
 });
 
-// Comando para eliminar una tarea
 yargs.command({
   command: 'delete',
   describe: 'Delete a task',
@@ -93,16 +87,14 @@ yargs.command({
   },
 });
 
-// Comando para marcar una tarea como en progreso
 yargs.command({
-  command: 'mark-in-progress',
+  command: 'mark-in-progress <id>',
   describe: 'Mark a task as in progress',
-  builder: {
-    id: {
-      describe: 'ID of the task',
-      demandOption: true,
+   builder: (yargs) => {
+    return yargs.positional('id', {
+      describe: 'id to the task',
       type: 'number',
-    },
+    });
   },
   handler(argv) {
     const taskToUpdate = tasks.find(t => t.id === argv.id);
@@ -111,21 +103,19 @@ yargs.command({
       writeTasks(tasks);
       console.log(`Task marked as in progress (ID: ${argv.id})`);
     } else {
-      console.log(`Task with ID ${argv.id} not found.`);
+      console.log(`Task with ID ${argv} not found.`);
     }
   },
 });
 
-// Comando para marcar una tarea como completada
 yargs.command({
-  command: 'mark-done',
+  command: 'mark-done <id>',
   describe: 'Mark a task as done',
-  builder: {
-    id: {
-      describe: 'ID of the task',
-      demandOption: true,
-      type: 'number',
-    },
+  builder: (yargs) =>{
+    return yargs.positional('id',{
+      describe: 'id to the task',
+      type:'number'
+    })
   },
   handler(argv) {
     const taskToUpdate = tasks.find(t => t.id === argv.id);
@@ -139,18 +129,16 @@ yargs.command({
   },
 });
 
-// Comando para listar todas las tareas
 yargs.command({
-  command: 'list-all',
+  command: 'list',
   describe: 'List all tasks',
   handler() {
     console.log(tasks);
   },
 });
 
-// Comando para listar tareas por estado
 yargs.command({
-  command: 'list',
+  command: 'list-status',
   describe: 'List tasks by status',
   builder: {
     status: {
@@ -165,5 +153,4 @@ yargs.command({
   },
 });
 
-// Inicializa Yargs
 yargs.parse();

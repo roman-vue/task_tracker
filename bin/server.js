@@ -15,7 +15,6 @@ const readTasks = () => {
   }
 };
 
-// Función para escribir tareas en el archivo JSON
 const writeTasks = (tasks) => {
   try {
     fs.writeFileSync(tasksFile, JSON.stringify(tasks, null, 2));
@@ -71,21 +70,25 @@ yargs.command({
 });
 
 yargs.command({
-  command: 'delete',
+  command: 'delete <id>',
   describe: 'Delete a task',
-  builder: {
-    id: {
-      describe: 'ID of the task',
-      demandOption: true,
+  builder: (yargs) => {
+    return yargs.positional('id', {
+      describe: 'ID of the task to delete',
       type: 'number',
-    },
+    });
   },
   handler(argv) {
-    tasks = tasks.filter(t => t.id !== argv.id);
-    writeTasks(tasks);
+    // Filtramos la tarea y reasignamos IDs para que sean consecutivos
+    const filteredTasks = tasks.filter(t => t.id !== argv.id)
+      .map((task, index) => ({ ...task, id: index + 1 }));
+
+    console.log('tasks', filteredTasks);
+    writeTasks(filteredTasks);
     console.log(`Task deleted successfully (ID: ${argv.id})`);
   },
 });
+
 
 yargs.command({
   command: 'mark-in-progress <id>',

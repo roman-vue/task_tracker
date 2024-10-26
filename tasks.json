@@ -1,11 +1,6 @@
 [
   {
     "id": 1,
-    "task": "comprar",
-    "status": "done"
-  },
-  {
-    "id": 2,
     "task": "hola",
     "status": "todo"
   }

@@ -1,9 +1,12 @@
 {
   "name": "task_tracker",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./bin/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "task-cli": "./bin/server.js"
   },
   "keywords": [],
   "author": "",
